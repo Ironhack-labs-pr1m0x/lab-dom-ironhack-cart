@@ -1,42 +1,78 @@
-// ITERATION 1
+// ✅ ITERATION 1
 
 function updateSubtotal(product) {
-  console.log('Calculating subtotal, yey!');
+  const price = product.querySelector('.price span').innerText;
+  const quantity = product.querySelector('.quantity input').value;
+  const subtotal = product.querySelector('.subtotal span');
 
-  //... your code goes here
+  const subTotalCal = Number(price) * Number(quantity);
+
+  subtotal.innerText = subTotalCal;
+
+  return subTotalCal;
 }
-
 function calculateAll() {
-  // code in the following two lines is added just for testing purposes.
-  // it runs when only iteration 1 is completed. at later point, it can be removed.
-  const singleProduct = document.querySelector('.product');
-  updateSubtotal(singleProduct);
-  // end of test
+  // ✅ ITERATION 2
 
-  // ITERATION 2
-  //... your code goes here
+  let sumSubTotals = 0;
 
-  // ITERATION 3
-  //... your code goes here
+  const products = document.querySelectorAll('#cart > tbody > .product');
+  products.forEach((product) => {
+    sumSubTotals += updateSubtotal(product);
+  });
+
+  // ✅ ITERATION 3
+
+  const totalPrice = document.querySelector('#total-value span');
+  totalPrice.innerText = sumSubTotals;
 }
 
-// ITERATION 4
+// ✅ ITERATION 4
 
 function removeProduct(event) {
-  const target = event.currentTarget;
-  console.log('The target in remove is:', target);
-  //... your code goes here
+  event.target.closest('tr').remove();
+
+  // ▼ Recalculate total, when product is removed //
+  calculateAll();
 }
 
 // ITERATION 5
 
 function createProduct() {
-  //... your code goes here
+  const productsContainer = document.querySelector('#cart tbody');
+  const [name, price] = document.querySelectorAll('.create-product input');
+
+  const tr = `<tr class="product">
+    <td class="name">
+      <span>${name.value}</span>
+    </td>
+    <td class="price">$<span>${price.value}</span></td>
+    <td class="quantity">
+      <input type="number" value="0" min="0" placeholder="Quantity" />
+    </td>
+    <td class="subtotal">$<span>0</span></td>
+    <td class="action">
+      <button class="btn btn-remove">Remove</button>
+    </td>
+  </tr>`;
+
+  productsContainer.insertAdjacentHTML('beforeend', tr);
+
+  // ▼ Re-add remove btn functionality for new updated cart //
+  document.querySelectorAll('.btn-remove').forEach((el) => {
+    el.addEventListener('click', removeProduct);
+  });
 }
 
 window.addEventListener('load', () => {
   const calculatePricesBtn = document.getElementById('calculate');
   calculatePricesBtn.addEventListener('click', calculateAll);
 
-  //... your code goes here
+  // ▼ Add remove functionality //
+  document.querySelectorAll('.btn-remove').forEach((el) => {
+    el.addEventListener('click', removeProduct);
+  });
+
+  // ▼ Add create product functionality //
+  document.getElementById('create').addEventListener('click', createProduct);
 });
